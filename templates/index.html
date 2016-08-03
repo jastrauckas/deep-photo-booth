@@ -4,6 +4,7 @@
   </head>
   <body bgcolor=white>
     <script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     
     <h1>Deep Photo Booth</h1>
 
@@ -14,10 +15,31 @@
         Webcam.attach( '#my_camera' );
 
         function take_snapshot() {
-            Webcam.snap( function(data_uri) {
-                document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
-            } );
+          Webcam.snap( function(data_uri) {
+            upload_snapshot(data_uri);
+          });
         }
+
+        function upload_snapshot(snapshot) {
+          var myFormData = new FormData();
+          myFormData.append('snapshot', snapshot);
+
+          $.ajax({
+            url: 'generate',
+            type: 'POST',
+            processData: false, // important
+            contentType: false, // important
+            dataType : 'application/json;charset=UTF-8',
+            data: myFormData,
+            complete: show_result
+          });
+        }
+
+        function show_result(output) {
+          console.log(output.responseText);
+          document.getElementById('my_result').innerHTML = '<img src="'+output.responseText+'"/>';
+        }
+
     </script>
 
     <a href="javascript:void(take_snapshot())">Take Snapshot</a>
