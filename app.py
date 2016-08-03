@@ -18,7 +18,7 @@ def generate():
     imgdata = base64.b64decode(snapshot_str.split(',')[1])
     input_filename = 'cfns/sample_images/snapshot' + str(time.time()) + '.jpg'
     output_filename = 'cfns/sample_images/output' + str(time.time()) + '.jpg'
-    with open(input_filename, 'wb') as f:
+    with open(input_filename, 'wb+') as f:
         f.write(imgdata)
     os.system('python cfns/generate.py ' + input_filename + ' -m cfns/models/seurat.model -o ' + output_filename)
     #return flask.render_template('index.html')
