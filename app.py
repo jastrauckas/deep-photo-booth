@@ -15,7 +15,9 @@ def generate():
     #outputPath = request.args.get('output')
     snapshot_str = request.values['snapshot']
     print 'CONTENT: ' + str(snapshot_str.split(',')[1])
-    imgdata = base64.b64decode(snapshot_str.split(',')[1])
+	imgdata = base64.b64decode(snapshot_str.split(',')[1])
+	if not os.path.exists('cfns/sample_images'):
+		os.makedirs('cfns/sample_images')
     input_filename = 'cfns/sample_images/snapshot' + str(time.time()) + '.jpg'
     output_filename = 'cfns/sample_images/output' + str(time.time()) + '.jpg'
     with open(input_filename, 'wb+') as f:
