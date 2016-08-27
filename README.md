@@ -18,7 +18,9 @@ $ easy_install Pillow
 ```  
 
 Finally, serve the flask app from the project root directory
-```$ export FLASK_APP=app.py && flask run```
+```
+$ export FLASK_APP=app.py && flask run
+```
 
 ## References
 - [Perceptual Losses for Real-Time Style Transfer and Super-Resolution](http://arxiv.org/abs/1603.08155)
