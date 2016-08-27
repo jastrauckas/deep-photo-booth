@@ -10,13 +10,17 @@ Chainer source can be obtained [here](https://github.com/yusuketomoto/chainer-fa
 
 Pillow can be installed with either
 ```
-$ pip install Pillow```  
+$ pip install Pillow
+```  
 or
 ```
 $ easy_install Pillow
-```
+```  
 
-## Reference
+Finally, serve the flask app from the project root directory
+```$ export FLASK_APP=app.py && flask run```
+
+## References
 - [Perceptual Losses for Real-Time Style Transfer and Super-Resolution](http://arxiv.org/abs/1603.08155)
 
 Code written in this repository uses the following projects.
