@@ -30,3 +30,5 @@ def generate():
 def send_image(image_name):
     return send_from_directory('cfns/sample_images/', image_name)
 
+if __name__ == "__main__":
+    app.run()
