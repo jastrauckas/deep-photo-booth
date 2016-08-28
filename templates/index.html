@@ -7,6 +7,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     
     <h1>Deep Photo Booth</h1>
+    <select id="style">
+      <option value="seurat">Seurat Impressionism</option>
+      <option value="composition">Modrian Composition</option>
+    </select>
 
     <div id="my_camera" style="width:320px; height:240px;"></div>
     <div id="my_result"></div>
@@ -15,20 +19,23 @@
         Webcam.attach( '#my_camera' );
 
         function take_snapshot() {
+          var e = document.getElementById("style");
+          var style = e.options[e.selectedIndex].value;
           Webcam.snap( function(data_uri) {
-            upload_snapshot(data_uri);
+            upload_snapshot(data_uri, style);
           });
         }
 
-        function upload_snapshot(snapshot) {
+        function upload_snapshot(snapshot, style) {
           var myFormData = new FormData();
           myFormData.append('snapshot', snapshot);
+          myFormData.append('style', style);
 
           $.ajax({
             url: 'generate',
             type: 'POST',
-            processData: false, // important
-            contentType: false, // important
+            processData: false,
+            contentType: false,
             dataType : 'application/json;charset=UTF-8',
             data: myFormData,
             complete: show_result
@@ -38,11 +45,12 @@
         function show_result(output) {
           console.log(output.responseText);
           document.getElementById('my_result').innerHTML = '<img src="'+output.responseText+'"/>';
-        }
 
+        }
     </script>
 
     <a href="javascript:void(take_snapshot())">Take Snapshot</a>
+    <a href="javascript:window.print()">Print</a>
 
   </body>
 </html>
