@@ -1,21 +1,29 @@
 <html>
   <head>
     <title>Deep Photo Booth</title>
-  </head>
-  <body bgcolor=white>
-    <script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/image-picker.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/image-picker.js') }}"></script>
+
+  </head>
+
+  <body bgcolor=white>
     
     <h1>Deep Photo Booth</h1>
-    <select id="style">
-      <option value="seurat">Seurat Impressionism</option>
-      <option value="composition">Modrian Composition</option>
-    </select>
+
+    <div class="picker">
+      <select class="image-picker" id="style">
+        <option data-img-src='{{ url_for('static', filename='images/seurat.png') }}' value="seurat">Seurat</option>
+        <option data-img-src='{{ url_for('static', filename='images/mandrian.png') }}' value="composition">Mandrian</option>
+      </select>
+    </div>
 
     <div id="my_camera" style="width:320px; height:240px;"></div>
     <div id="my_result"></div>
 
     <script language="JavaScript">
+        $("select").imagepicker()
         Webcam.attach( '#my_camera' );
 
         function take_snapshot() {

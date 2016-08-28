@@ -8,6 +8,10 @@ app = Flask(__name__)
 def index():
     return flask.render_template('index.html')
 
+@app.route('/static/css/<path:stylesheet_name>')
+def send_css(stylesheet_name):
+    return send_from_directory('static/css/', stylesheet_name)
+
 @app.route('/generate', methods=['POST'])
 def generate():
     snapshot_str = request.values['snapshot']
