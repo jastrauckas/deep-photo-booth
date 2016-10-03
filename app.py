@@ -33,5 +33,23 @@ def generate():
 def send_image(image_name):
     return send_from_directory('cfns/sample_images/', image_name)
 
+#if __name__ == "__main__":
+#    app.run(host="0.0.0.0", port=int("8008"))
+
 if __name__ == "__main__":
-    app.run()
+	from tornado.wsgi import WSGIContainer
+	from tornado.httpserver import HTTPServer
+	from tornado.ioloop import IOLoop
+
+	http_server = HTTPServer(WSGIContainer(app), ssl_options={
+		'certfile': 'ssl/server.crt',
+		'keyfile': 'ssl/server.key'
+	 })
+
+	http_server.listen(5000)
+	print('hello')
+	try:
+	    IOLoop.instance().start()
+	except KeyboardInterrupt:
+		IOLoop.instance().stop()
+
