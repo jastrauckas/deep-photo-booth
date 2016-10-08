@@ -3,10 +3,19 @@ Fast artistic style transfer by using feed forward network.
 
 ## Requirements and Setup
 - [Chainer](https://github.com/pfnet/chainer)
+- [Pre-trained Models](https://github.com/gafr/chainer-fast-neuralstyle-models)
 - [Pillow](https://python-pillow.org/)
+- [Flask](http://flask.pocoo.org/)
+- [Tornado](http://www.tornadoweb.org)
 
 Set up Chainer impplementation of fast neural style in  directory called 'cfns' inside the root directory.
 Chainer source can be obtained [here](https://github.com/yusuketomoto/chainer-fast-neuralstyle).  
+
+Clone the [pre-trained models](https://github.com/gafr/chainer-fast-neuralstyle-models)
+in a directory named 'chainer-fast-neuralstyle-models' inside the root directory.  
+
+Then, install the required python packages using pip.
+Note that a [virtual environment](https://docs.python.org/3/library/venv.html) can be used to remove the need for sudo access.
 
 Pillow can be installed with either
 ```
@@ -17,9 +26,19 @@ or
 $ easy_install Pillow
 ```  
 
+Install Tornado:
+```
+$ pip install tornado
+```  
+
+Install Flask:
+```
+$ pip install Flask
+```  
+
 Finally, serve the flask app from the project root directory
 ```
-$ export FLASK_APP=app.py && flask run
+$ python app.py
 ```
 
 ## References
