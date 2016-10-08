@@ -44,7 +44,7 @@ $ python app.py
 ## References
 - [Perceptual Losses for Real-Time Style Transfer and Super-Resolution](http://arxiv.org/abs/1603.08155)
 
-Code written in this repository uses the following projects.
+This app uses the following projects, either directly or slightly adapted:
 - [webcam.js](https://github.com/jhuckaby/webcamjs)
-- [chainer-gogh](https://github.com/mattya/chainer-gogh.git) Chainer implementation of neural-style. I heavily referenced it.
-- [chainer-cifar10](https://github.com/mitmul/chainer-cifar10) Residual block implementation is referred.
+- [chainer-fast-neuralstyle](https://github.com/yusuketomoto/chainer-fast-neuralstyle) Chainer implementation of "Perceptual Losses for Real-Time Style Transfer and Super-Resolution".
+- [chainer-fast-neuralstyle-models](https://github.com/gafr/chainer-fast-neuralstyle-models) Pre-trained models compatible with the repository above. 
