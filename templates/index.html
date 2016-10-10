@@ -1,71 +1,78 @@
 <html>
-  <head>
-    <title>Deep Photo Booth</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/image-picker.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/image-picker.js') }}"></script>
+	<head>
+		<title>Deep Photo Booth</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/image-picker.css') }}">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/image-picker.js') }}"></script>
 
-  </head>
+	</head>
 
-  <body bgcolor=white>
+	<body bgcolor=white>
 
-    <div class="picker">
-      <select class="image-picker" data-limit=3 multiple="multiple" id="style">
-        <option data-img-src='static/images/starry-style.jpg' value="starry">Starry Night</option>
-        <option data-img-src='static/images/scream-style.jpg' value="scream-style">The Scream</option>
-        <option data-img-src='static/images/kandinsky-style.jpg' value="kandinsky_e2_full512">Kandinsky</option>
-        <option data-img-src='static/images/kanagawa-style.jpg' value="kanagawa">Kanagawa</option>
-        <option data-img-src='static/images/hundertwasser-style.jpg' value="hundertwasser">Hundertwasser</option>
-        <option data-img-src='static/images/cubist-style.jpg' value="cubist">Cubist</option>
-        <option data-img-src='static/images/fur-style.jpg' value="fur_0">Fur</option>
-        <option data-img-src='static/images/candy-style.jpg' value="candy_512_2_49000">Candy</option>
-      </select>
-    </div>
+		<div class="picker">
+			<select class="image-picker" data-limit=3 multiple="multiple" id="style">
+				<option data-img-src='static/images/starry-style.jpg' value="starry">Starry Night</option>
+				<option data-img-src='static/images/scream-style.jpg' value="scream-style">The Scream</option>
+				<option data-img-src='static/images/kandinsky-style.jpg' value="kandinsky_e2_full512">Kandinsky</option>
+				<option data-img-src='static/images/kanagawa-style.jpg' value="kanagawa">Kanagawa</option>
+				<option data-img-src='static/images/hundertwasser-style.jpg' value="hundertwasser">Hundertwasser</option>
+				<option data-img-src='static/images/cubist-style.jpg' value="cubist">Cubist</option>
+				<option data-img-src='static/images/fur-style.jpg' value="fur_0">Fur</option>
+				<option data-img-src='static/images/candy-style.jpg' value="candy_512_2_49000">Candy</option>
+			</select>
+		</div>
 
-    <div id="my_camera" style="width:320px; height:240px;"></div>
-    <div id="my_result"></div>
+		<div id="my_camera" style="width:320px; height:240px;"></div>
+		<div id="result0"></div>
+		<div id="result1"></div>
+		<div id="result2"></div>
 
-    <script language="JavaScript">
-        $("select").imagepicker({limit: 3})
-        Webcam.attach( '#my_camera' );
+		<script language="JavaScript">
+			$("select").imagepicker({limit: 3})
+			Webcam.attach( '#my_camera' );
 
-        function take_snapshot() {
-          var e = document.getElementById("style");
-					var styles = [];
-					for (var i = 0; i < e.length; i++) {
-						if (e.options[i].selected) styles.push(e.options[i].value);
-					}
-          Webcam.snap( function(data_uri) {
-            upload_snapshot(data_uri, styles);
-          });
-        }
+			function take_snapshot() {
+				var e = document.getElementById("style");
+				var styles = [];
+				for (var i = 0; i < e.length; i++) {
+					if (e.options[i].selected) styles.push(e.options[i].value);
+				}
+				Webcam.snap( function(data_uri) {
+					upload_snapshot(data_uri, styles);
+				});
+			}
 
-        function upload_snapshot(snapshot, styles) {
-          var myFormData = new FormData();
-          myFormData.append('snapshot', snapshot);
-          myFormData.append('styles', JSON.stringify(styles));
+			function upload_snapshot(snapshot, styles) {
+				var myFormData = new FormData();
+				myFormData.append('snapshot', snapshot);
+				myFormData.append('styles', JSON.stringify(styles));
 
-          $.ajax({
-            url: 'generate',
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            dataType : 'application/json;charset=UTF-8',
-            data: myFormData,
-            complete: show_result
-          });
-        }
+				$.ajax({
+					url: 'generate',
+					type: 'POST',
+					processData: false,
+					contentType: false,
+					dataType : 'application/json;charset=UTF-8',
+					data: myFormData,
+					complete: show_result
+				});
+			}
 
-        function show_result(output) {
-          console.log(output.responseText);
-          document.getElementById('my_result').innerHTML = '<img src="'+output.responseText+'"/>';
+			function show_result(output) {
+				console.log(output.responseText);
+				var jsonData = JSON.parse(output.responseText);
+				for (var i = 0; i < jsonData.length; i++) {
+					var img = jsonData[i];
+					var div_id = 'result'+i
+					console.log(img);
+					document.getElementById(div_id).innerHTML = '<img src="'+img+'"/>';
+				}
+			}
+		</script>
 
-        }
-    </script>
+		<a href="javascript:void(take_snapshot())">Take Snapshot</a>
+		<a href="javascript:window.print()">Print</a>
 
-    <a href="javascript:void(take_snapshot())">Take Snapshot</a>
-    <a href="javascript:window.print()">Print</a>
-
-  </body>
+	</body>
 </html>

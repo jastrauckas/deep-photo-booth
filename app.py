@@ -7,37 +7,42 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return flask.render_template('index.html')
+	return flask.render_template('index.html')
 
 @app.route('/static/css/<path:stylesheet_name>')
 def send_css(stylesheet_name):
-    return send_from_directory('static/css/', stylesheet_name)
+	return send_from_directory('static/css/', stylesheet_name)
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    snapshot_str = request.values['snapshot']
-    style_names = json.loads(request.values['styles'])
-    style_str = style_names[0]
-    #print "SELECTED STYLE: " + style_names[0]
-    #print 'CONTENT: ' + str(snapshot_str.split(',')[1])
+	snapshot_str = request.values['snapshot']
+	style_names = json.loads(request.values['styles'])
+	#print "SELECTED STYLE: " + style_names[0]
+	#print 'CONTENT: ' + str(snapshot_str.split(',')[1])
 
-    imgdata = base64.b64decode(snapshot_str.split(',')[1])
-    if not os.path.exists('cfns/sample_images'):
-        os.makedirs('cfns/sample_images')
-    input_filename = 'cfns/sample_images/snapshot' + str(time.time()) + '.jpg'
-    output_filename = 'cfns/sample_images/output' + str(time.time()) + '.jpg'
-    with open(input_filename, 'wb+') as f:
-        f.write(imgdata)
-    os.system('python cfns/generate.py ' + input_filename + ' -m chainer-fast-neuralstyle-models/models/' + style_str + '.model -o ' + output_filename)
-    return '/' + output_filename
+	imgdata = base64.b64decode(snapshot_str.split(',')[1])
+	if not os.path.exists('cfns/sample_images'):
+		os.makedirs('cfns/sample_images')
+	input_filename = 'cfns/sample_images/snapshot' + str(time.time()) + '.jpg'
+	with open(input_filename, 'wb+') as f:
+		f.write(imgdata)
+	
+	output_paths = [] 
+	for i in range(len(style_names)):
+		style_str = style_names[i]
+		output_filename = 'cfns/sample_images/output' + style_str + str(time.time()) + '.jpg'
+		os.system('python cfns/generate.py ' + input_filename + ' -m chainer-fast-neuralstyle-models/models/' + style_str + '.model -o ' + output_filename)
+		output_paths.append('/' + output_filename)
+		
+	return json.dumps(output_paths)
 
 @app.route('/cfns/sample_images/<path:image_name>')
 def send_image_old(image_name):
-    return send_from_directory('cfns/sample_images/', image_name)
+	return send_from_directory('cfns/sample_images/', image_name)
 
 @app.route('/chainer-fast-neuralstyle-models/images/<path:image_name>')
 def send_image(image_name):
-    return send_from_directory('chainer-fast-neuralstyle-models/images/', image_name)
+	return send_from_directory('chainer-fast-neuralstyle-models/images/', image_name)
 
 if __name__ == "__main__":
 	if os.path.isfile('ssl/server.crt'):
@@ -53,7 +58,7 @@ if __name__ == "__main__":
 		http_server.listen(5000)
 		print('hello')
 		try:
-		    IOLoop.instance().start()
+				IOLoop.instance().start()
 		except KeyboardInterrupt:
 			IOLoop.instance().stop()
 	else:
