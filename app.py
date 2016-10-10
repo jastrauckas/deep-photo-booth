@@ -39,6 +39,15 @@ def generate():
 		p = Popen(['python', 'cfns/generate.py', input_filename, '-m', 'chainer-fast-neuralstyle-models/models/'+style_str+'.model', '-o', output_filename])
 		procs.append(p)
 		output_paths.append('/' + output_filename)
+
+	# while we have a sec, clean up old input and output files
+	path = os.getcwd() + '/cfns/sample_images'
+	now = time.time()
+	for name in os.listdir(path):
+		f = os.path.join(path, name)
+		if os.path.isfile(f) and os.stat(f).st_mtime < now - 600:
+			if name.startswith('snapshot') or name.startswith('output'):
+				os.remove(os.path.join(path, f))
 		
 	# poll procs until they are all finished
 	all_done = False
