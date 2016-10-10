@@ -26,12 +26,16 @@ def generate():
     output_filename = 'cfns/sample_images/output' + str(time.time()) + '.jpg'
     with open(input_filename, 'wb+') as f:
         f.write(imgdata)
-    os.system('python cfns/generate.py ' + input_filename + ' -m cfns/models/' + style_str + '.model -o ' + output_filename)
+    os.system('python cfns/generate.py ' + input_filename + ' -m chainer-fast-neuralstyle-models/models/' + style_str + '.model -o ' + output_filename)
     return '/' + output_filename
 
 @app.route('/cfns/sample_images/<path:image_name>')
-def send_image(image_name):
+def send_image_old(image_name):
     return send_from_directory('cfns/sample_images/', image_name)
+
+@app.route('/chainer-fast-neuralstyle-models/images/<path:image_name>')
+def send_image(image_name):
+    return send_from_directory('chainer-fast-neuralstyle-models/images/', image_name)
 
 if __name__ == "__main__":
 	if os.path.isfile('ssl/server.crt'):
