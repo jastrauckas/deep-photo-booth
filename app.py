@@ -1,7 +1,8 @@
-from flask import Flask, request, send_from_directory
-import flask
 import base64
+import flask
+from flask import Flask, request, send_from_directory
 import os, sys, inspect, time
+import json
 app = Flask(__name__)
 
 @app.route('/')
@@ -15,8 +16,9 @@ def send_css(stylesheet_name):
 @app.route('/generate', methods=['POST'])
 def generate():
     snapshot_str = request.values['snapshot']
-    style_str = request.values['style']
-    #print "SELECTED STYLE: " + style_str
+    style_names = json.loads(request.values['styles'])
+    style_str = style_names[0]
+    #print "SELECTED STYLE: " + style_names[0]
     #print 'CONTENT: ' + str(snapshot_str.split(',')[1])
 
     imgdata = base64.b64decode(snapshot_str.split(',')[1])

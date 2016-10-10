@@ -11,7 +11,7 @@
   <body bgcolor=white>
 
     <div class="picker">
-      <select class="image-picker" id="style">
+      <select class="image-picker" data-limit=3 multiple="multiple" id="style">
         <option data-img-src='static/images/starry-style.jpg' value="starry">Starry Night</option>
         <option data-img-src='static/images/scream-style.jpg' value="scream-style">The Scream</option>
         <option data-img-src='static/images/kandinsky-style.jpg' value="kandinsky_e2_full512">Kandinsky</option>
@@ -27,21 +27,24 @@
     <div id="my_result"></div>
 
     <script language="JavaScript">
-        $("select").imagepicker()
+        $("select").imagepicker({limit: 3})
         Webcam.attach( '#my_camera' );
 
         function take_snapshot() {
           var e = document.getElementById("style");
-          var style = e.options[e.selectedIndex].value;
+					var styles = [];
+					for (var i = 0; i < e.length; i++) {
+						if (e.options[i].selected) styles.push(e.options[i].value);
+					}
           Webcam.snap( function(data_uri) {
-            upload_snapshot(data_uri, style);
+            upload_snapshot(data_uri, styles);
           });
         }
 
-        function upload_snapshot(snapshot, style) {
+        function upload_snapshot(snapshot, styles) {
           var myFormData = new FormData();
           myFormData.append('snapshot', snapshot);
-          myFormData.append('style', style);
+          myFormData.append('styles', JSON.stringify(styles));
 
           $.ajax({
             url: 'generate',
