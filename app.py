@@ -3,6 +3,8 @@ import flask
 from flask import Flask, request, send_from_directory
 import os, sys, inspect, time
 import json
+from subprocess import Popen
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -27,13 +29,26 @@ def generate():
 	with open(input_filename, 'wb+') as f:
 		f.write(imgdata)
 	
-	output_paths = [] 
+	output_paths = []
+	procs = [] 
+
+	# start file transfer commands in parallel
 	for i in range(len(style_names)):
 		style_str = style_names[i]
 		output_filename = 'cfns/sample_images/output' + style_str + str(time.time()) + '.jpg'
-		os.system('python cfns/generate.py ' + input_filename + ' -m chainer-fast-neuralstyle-models/models/' + style_str + '.model -o ' + output_filename)
+		p = Popen(['python', 'cfns/generate.py', input_filename, '-m', 'chainer-fast-neuralstyle-models/models/'+style_str+'.model', '-o', output_filename])
+		procs.append(p)
 		output_paths.append('/' + output_filename)
 		
+	# poll procs until they are all finished
+	all_done = False
+	while not all_done:
+		time.sleep(0.5)
+		all_done = True
+		for p in procs:
+			if p.poll() is None:
+				all_done = False
+
 	return json.dumps(output_paths)
 
 @app.route('/cfns/sample_images/<path:image_name>')
